@@ -40,7 +40,10 @@ function AuthPage() {
     setLoading(true);
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     setLoading(false);
-    if (error) return toast.error("Connexion impossible", { description: error.message });
+    if (error) {
+      toast.error("Connexion impossible", { description: error.message });
+      return;
+    }
     toast.success("Bienvenue au cabinet");
     navigate({ to: "/tableau-de-bord", replace: true });
   }
@@ -54,7 +57,10 @@ function AuthPage() {
       options: { emailRedirectTo: window.location.origin, data: { full_name: fullName } },
     });
     setLoading(false);
-    if (error) return toast.error("Inscription impossible", { description: error.message });
+    if (error) {
+      toast.error("Inscription impossible", { description: error.message });
+      return;
+    }
     if (!data.session) {
       toast.success("Compte créé", { description: "Vérifiez votre boîte mail pour confirmer votre adresse." });
       return;
@@ -67,7 +73,8 @@ function AuthPage() {
     const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
     if (result.error) {
       setLoading(false);
-      return toast.error("Connexion Google impossible");
+      toast.error("Connexion Google impossible");
+      return;
     }
     if (result.redirected) return;
     navigate({ to: "/tableau-de-bord", replace: true });

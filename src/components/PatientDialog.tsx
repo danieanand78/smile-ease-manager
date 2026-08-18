@@ -33,7 +33,7 @@ export function PatientDialog() {
     onSuccess: (patient) => {
       queryClient.invalidateQueries({ queryKey: ["patients"] });
       queryClient.invalidateQueries({ queryKey: ["stats"] });
-      toast.success(`Dossier créé pour ${patient.prenom} ${patient.nom}`);
+      toast.success(`Dossier créé pour ${patient?.prenom ?? ""} ${patient?.nom ?? ""}`.trim());
       setOpen(false);
     },
     onError: (error: Error) => toast.error("Création impossible", { description: error.message }),
