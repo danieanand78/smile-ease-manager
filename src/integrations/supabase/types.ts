@@ -14,16 +14,226 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      appointments: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          date_rdv: string
+          duree_min: number
+          id: string
+          motif: string
+          notes: string | null
+          patient_id: string
+          statut: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          date_rdv: string
+          duree_min?: number
+          id?: string
+          motif?: string
+          notes?: string | null
+          patient_id: string
+          statut?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          date_rdv?: string
+          duree_min?: number
+          id?: string
+          motif?: string
+          notes?: string | null
+          patient_id?: string
+          statut?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "appointments_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      patients: {
+        Row: {
+          adresse: string | null
+          allergies: string | null
+          antecedents_medicaux: string | null
+          created_at: string
+          created_by: string | null
+          date_naissance: string | null
+          dossier_no: string
+          email: string | null
+          groupe_sanguin: string | null
+          id: string
+          nom: string
+          notes: string | null
+          prenom: string
+          sexe: string
+          tabac: boolean
+          telephone: string | null
+          traitements_en_cours: string | null
+          updated_at: string
+        }
+        Insert: {
+          adresse?: string | null
+          allergies?: string | null
+          antecedents_medicaux?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_naissance?: string | null
+          dossier_no?: string
+          email?: string | null
+          groupe_sanguin?: string | null
+          id?: string
+          nom: string
+          notes?: string | null
+          prenom: string
+          sexe?: string
+          tabac?: boolean
+          telephone?: string | null
+          traitements_en_cours?: string | null
+          updated_at?: string
+        }
+        Update: {
+          adresse?: string | null
+          allergies?: string | null
+          antecedents_medicaux?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_naissance?: string | null
+          dossier_no?: string
+          email?: string | null
+          groupe_sanguin?: string | null
+          id?: string
+          nom?: string
+          notes?: string | null
+          prenom?: string
+          sexe?: string
+          tabac?: boolean
+          telephone?: string | null
+          traitements_en_cours?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          fonction: string
+          full_name: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          fonction?: string
+          full_name?: string
+          id: string
+        }
+        Update: {
+          created_at?: string
+          fonction?: string
+          full_name?: string
+          id?: string
+        }
+        Relationships: []
+      }
+      user_roles: {
+        Row: {
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      visits: {
+        Row: {
+          actes: string | null
+          created_at: string
+          created_by: string | null
+          date_visite: string
+          dents: string | null
+          diagnostic: string | null
+          examen_clinique: string | null
+          honoraires: number
+          id: string
+          motif: string
+          notes: string | null
+          patient_id: string
+          prescription: string | null
+          statut_paiement: string
+        }
+        Insert: {
+          actes?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_visite?: string
+          dents?: string | null
+          diagnostic?: string | null
+          examen_clinique?: string | null
+          honoraires?: number
+          id?: string
+          motif?: string
+          notes?: string | null
+          patient_id: string
+          prescription?: string | null
+          statut_paiement?: string
+        }
+        Update: {
+          actes?: string | null
+          created_at?: string
+          created_by?: string | null
+          date_visite?: string
+          dents?: string | null
+          diagnostic?: string | null
+          examen_clinique?: string | null
+          honoraires?: number
+          id?: string
+          motif?: string
+          notes?: string | null
+          patient_id?: string
+          prescription?: string | null
+          statut_paiement?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "visits_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin" | "dentiste" | "assistant"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +360,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin", "dentiste", "assistant"],
+    },
   },
 } as const
