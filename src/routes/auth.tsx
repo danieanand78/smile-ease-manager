@@ -6,9 +6,9 @@ import { Stethoscope } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from "@/integrations/supabase/client";
-import { lovable } from "@/integrations/lovable/index";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -22,12 +22,35 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
+const ROLES = [
+  { value: "admin", label: "Administrateur", fonction: "Administrateur" },
+  { value: "dentiste", label: "Dentiste", fonction: "Dentiste" },
+  { value: "assistant", label: "Secrétaire", fonction: "Secrétaire" },
+] as const;
+
+/** Identifiant local converti en adresse technique interne (aucun email réel requis). */
+const LOCAL_DOMAIN = "cabinet.local";
+
+function normalizeUsername(value: string) {
+  return value
+    .trim()
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9._-]/g, "");
+}
+
+function toLocalEmail(username: string) {
+  return `${normalizeUsername(username)}@${LOCAL_DOMAIN}`;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [role, setRole] = useState<string>("dentiste");
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -37,11 +60,16 @@ function AuthPage() {
 
   async function handleSignIn(e: React.FormEvent) {
     e.preventDefault();
+    const login = normalizeUsername(username);
+    if (!login) {
+      toast.error("Identifiant invalide", { description: "Utilisez des lettres, chiffres, point, tiret ou underscore." });
+      return;
+    }
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    const { error } = await supabase.auth.signInWithPassword({ email: toLocalEmail(login), password });
     setLoading(false);
     if (error) {
-      toast.error("Connexion impossible", { description: error.message });
+      toast.error("Connexion impossible", { description: "Identifiant ou mot de passe incorrect." });
       return;
     }
     toast.success("Bienvenue au cabinet");
@@ -50,33 +78,33 @@ function AuthPage() {
 
   async function handleSignUp(e: React.FormEvent) {
     e.preventDefault();
+    const login = normalizeUsername(username);
+    if (login.length < 3) {
+      toast.error("Identifiant invalide", { description: "3 caractères minimum (lettres, chiffres, . _ -)." });
+      return;
+    }
+    const selected = ROLES.find((r) => r.value === role) ?? ROLES[1];
     setLoading(true);
     const { data, error } = await supabase.auth.signUp({
-      email,
+      email: toLocalEmail(login),
       password,
-      options: { emailRedirectTo: window.location.origin, data: { full_name: fullName } },
+      options: {
+        data: { full_name: fullName, username: login, role: selected.value, fonction: selected.fonction },
+      },
     });
     setLoading(false);
     if (error) {
-      toast.error("Inscription impossible", { description: error.message });
+      const taken = /already|exist/i.test(error.message);
+      toast.error("Inscription impossible", {
+        description: taken ? "Cet identifiant est déjà utilisé." : error.message,
+      });
       return;
     }
     if (!data.session) {
-      toast.success("Compte créé", { description: "Vérifiez votre boîte mail pour confirmer votre adresse." });
+      toast.success("Compte créé", { description: "Vous pouvez maintenant vous connecter." });
       return;
     }
-    navigate({ to: "/tableau-de-bord", replace: true });
-  }
-
-  async function handleGoogle() {
-    setLoading(true);
-    const result = await lovable.auth.signInWithOAuth("google", { redirect_uri: window.location.origin });
-    if (result.error) {
-      setLoading(false);
-      toast.error("Connexion Google impossible");
-      return;
-    }
-    if (result.redirected) return;
+    toast.success("Compte créé");
     navigate({ to: "/tableau-de-bord", replace: true });
   }
 
@@ -88,7 +116,9 @@ function AuthPage() {
             <Stethoscope className="h-6 w-6" aria-hidden />
           </div>
           <h1 className="mt-4 text-2xl font-semibold">Espace cabinet</h1>
-          <p className="mt-1 text-sm text-muted-foreground">Accès réservé au praticien et à l'équipe soignante.</p>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Connexion locale réservée au personnel : administrateur, dentiste, secrétaire.
+          </p>
         </div>
 
         <div className="surface-panel p-6">
@@ -101,8 +131,15 @@ function AuthPage() {
             <TabsContent value="signin">
               <form onSubmit={handleSignIn} className="space-y-4 pt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="email">Adresse email</Label>
-                  <Input id="email" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <Label htmlFor="username">Nom d'utilisateur</Label>
+                  <Input
+                    id="username"
+                    required
+                    autoComplete="username"
+                    placeholder="dr.haddad"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password">Mot de passe</Label>
@@ -110,6 +147,7 @@ function AuthPage() {
                     id="password"
                     type="password"
                     required
+                    autoComplete="current-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
@@ -123,7 +161,7 @@ function AuthPage() {
             <TabsContent value="signup">
               <form onSubmit={handleSignUp} className="space-y-4 pt-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name">Nom du praticien</Label>
+                  <Label htmlFor="name">Nom complet</Label>
                   <Input
                     id="name"
                     required
@@ -133,8 +171,30 @@ function AuthPage() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="email2">Adresse email</Label>
-                  <Input id="email2" type="email" required value={email} onChange={(e) => setEmail(e.target.value)} />
+                  <Label htmlFor="username2">Nom d'utilisateur</Label>
+                  <Input
+                    id="username2"
+                    required
+                    autoComplete="username"
+                    placeholder="dr.haddad"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="role">Fonction au cabinet</Label>
+                  <Select value={role} onValueChange={setRole}>
+                    <SelectTrigger id="role">
+                      <SelectValue placeholder="Choisir une fonction" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {ROLES.map((r) => (
+                        <SelectItem key={r.value} value={r.value}>
+                          {r.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="password2">Mot de passe</Label>
@@ -143,6 +203,7 @@ function AuthPage() {
                     type="password"
                     required
                     minLength={6}
+                    autoComplete="new-password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                   />
@@ -154,13 +215,9 @@ function AuthPage() {
             </TabsContent>
           </Tabs>
 
-          <div className="my-5 flex items-center gap-3 text-xs uppercase tracking-wide text-muted-foreground">
-            <span className="h-px flex-1 bg-border" /> ou <span className="h-px flex-1 bg-border" />
-          </div>
-
-          <Button variant="outline" className="w-full" onClick={handleGoogle} disabled={loading}>
-            Continuer avec Google
-          </Button>
+          <p className="mt-5 text-xs text-muted-foreground">
+            Authentification locale uniquement : aucun compte externe, aucune réinitialisation par email.
+          </p>
         </div>
       </div>
     </main>
