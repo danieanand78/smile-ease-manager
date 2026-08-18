@@ -29,7 +29,7 @@ export async function getPatient(id: string): Promise<Patient | null> {
 }
 
 
-export async function createPatient(values: Database["public"]["Tables"]["patients"]["Insert"]) {
+export async function createPatient(values: Database["public"]["Tables"]["patients"]["Insert"]): Promise<Patient> {
   const { data: auth } = await supabase.auth.getUser();
   return unwrap(
     await supabase
@@ -46,7 +46,7 @@ export async function listVisits(patientId?: string) {
   return unwrap(await query);
 }
 
-export async function createVisit(values: Database["public"]["Tables"]["visits"]["Insert"]) {
+export async function createVisit(values: Database["public"]["Tables"]["visits"]["Insert"]): Promise<Visit> {
   const { data: auth } = await supabase.auth.getUser();
   return unwrap(
     await supabase
