@@ -22,9 +22,12 @@ export async function listPatients(search = "") {
   return unwrap(await query);
 }
 
-export async function getPatient(id: string) {
-  return unwrap(await supabase.from("patients").select("*").eq("id", id).maybeSingle());
+export async function getPatient(id: string): Promise<Patient | null> {
+  const { data, error } = await supabase.from("patients").select("*").eq("id", id).maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
 }
+
 
 export async function createPatient(values: Database["public"]["Tables"]["patients"]["Insert"]) {
   const { data: auth } = await supabase.auth.getUser();
