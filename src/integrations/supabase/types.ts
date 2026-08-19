@@ -19,6 +19,7 @@ export type Database = {
           created_at: string
           created_by: string | null
           date_rdv: string
+          dentiste_id: string | null
           duree_min: number
           id: string
           motif: string
@@ -30,6 +31,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           date_rdv: string
+          dentiste_id?: string | null
           duree_min?: number
           id?: string
           motif?: string
@@ -41,6 +43,7 @@ export type Database = {
           created_at?: string
           created_by?: string | null
           date_rdv?: string
+          dentiste_id?: string | null
           duree_min?: number
           id?: string
           motif?: string
@@ -58,11 +61,119 @@ export type Database = {
           },
         ]
       }
+      clinic_settings: {
+        Row: {
+          adresse: string | null
+          devise: string
+          email: string | null
+          id: string
+          logo_url: string | null
+          nom: string
+          singleton: boolean
+          telephone: string | null
+          tva_taux: number
+          updated_at: string
+        }
+        Insert: {
+          adresse?: string | null
+          devise?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          nom?: string
+          singleton?: boolean
+          telephone?: string | null
+          tva_taux?: number
+          updated_at?: string
+        }
+        Update: {
+          adresse?: string | null
+          devise?: string
+          email?: string | null
+          id?: string
+          logo_url?: string | null
+          nom?: string
+          singleton?: boolean
+          telephone?: string | null
+          tva_taux?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      invoices: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          date_facture: string
+          id: string
+          mode_paiement: string
+          montant: number
+          notes: string | null
+          numero: string
+          patient_id: string
+          remise: number
+          statut: string
+          total: number
+          tva: number
+          visit_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          date_facture?: string
+          id?: string
+          mode_paiement?: string
+          montant?: number
+          notes?: string | null
+          numero?: string
+          patient_id: string
+          remise?: number
+          statut?: string
+          total?: number
+          tva?: number
+          visit_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          date_facture?: string
+          id?: string
+          mode_paiement?: string
+          montant?: number
+          notes?: string | null
+          numero?: string
+          patient_id?: string
+          remise?: number
+          statut?: string
+          total?: number
+          tva?: number
+          visit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "invoices_patient_id_fkey"
+            columns: ["patient_id"]
+            isOneToOne: false
+            referencedRelation: "patients"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invoices_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       patients: {
         Row: {
           adresse: string | null
+          age: number | null
           allergies: string | null
           antecedents_medicaux: string | null
+          assurance: string | null
+          contact_urgence: string | null
           created_at: string
           created_by: string | null
           date_naissance: string | null
@@ -70,9 +181,12 @@ export type Database = {
           email: string | null
           groupe_sanguin: string | null
           id: string
+          maladies_chroniques: string | null
+          medicaments: string | null
           nom: string
           notes: string | null
           prenom: string
+          profession: string | null
           sexe: string
           tabac: boolean
           telephone: string | null
@@ -81,8 +195,11 @@ export type Database = {
         }
         Insert: {
           adresse?: string | null
+          age?: number | null
           allergies?: string | null
           antecedents_medicaux?: string | null
+          assurance?: string | null
+          contact_urgence?: string | null
           created_at?: string
           created_by?: string | null
           date_naissance?: string | null
@@ -90,9 +207,12 @@ export type Database = {
           email?: string | null
           groupe_sanguin?: string | null
           id?: string
+          maladies_chroniques?: string | null
+          medicaments?: string | null
           nom: string
           notes?: string | null
           prenom: string
+          profession?: string | null
           sexe?: string
           tabac?: boolean
           telephone?: string | null
@@ -101,8 +221,11 @@ export type Database = {
         }
         Update: {
           adresse?: string | null
+          age?: number | null
           allergies?: string | null
           antecedents_medicaux?: string | null
+          assurance?: string | null
+          contact_urgence?: string | null
           created_at?: string
           created_by?: string | null
           date_naissance?: string | null
@@ -110,9 +233,12 @@ export type Database = {
           email?: string | null
           groupe_sanguin?: string | null
           id?: string
+          maladies_chroniques?: string | null
+          medicaments?: string | null
           nom?: string
           notes?: string | null
           prenom?: string
+          profession?: string | null
           sexe?: string
           tabac?: boolean
           telephone?: string | null
@@ -166,51 +292,75 @@ export type Database = {
       visits: {
         Row: {
           actes: string | null
+          conseils: string | null
+          consultation_no: string
           created_at: string
           created_by: string | null
           date_visite: string
+          dentiste_id: string | null
           dents: string | null
+          dents_details: Json
           diagnostic: string | null
+          duree_min: number
           examen_clinique: string | null
           honoraires: number
           id: string
           motif: string
           notes: string | null
+          observations: string | null
           patient_id: string
           prescription: string | null
+          prochain_rdv: string | null
           statut_paiement: string
+          traitements: string[]
         }
         Insert: {
           actes?: string | null
+          conseils?: string | null
+          consultation_no?: string
           created_at?: string
           created_by?: string | null
           date_visite?: string
+          dentiste_id?: string | null
           dents?: string | null
+          dents_details?: Json
           diagnostic?: string | null
+          duree_min?: number
           examen_clinique?: string | null
           honoraires?: number
           id?: string
           motif?: string
           notes?: string | null
+          observations?: string | null
           patient_id: string
           prescription?: string | null
+          prochain_rdv?: string | null
           statut_paiement?: string
+          traitements?: string[]
         }
         Update: {
           actes?: string | null
+          conseils?: string | null
+          consultation_no?: string
           created_at?: string
           created_by?: string | null
           date_visite?: string
+          dentiste_id?: string | null
           dents?: string | null
+          dents_details?: Json
           diagnostic?: string | null
+          duree_min?: number
           examen_clinique?: string | null
           honoraires?: number
           id?: string
           motif?: string
           notes?: string | null
+          observations?: string | null
           patient_id?: string
           prescription?: string | null
+          prochain_rdv?: string | null
           statut_paiement?: string
+          traitements?: string[]
         }
         Relationships: [
           {

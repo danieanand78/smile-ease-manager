@@ -18,11 +18,67 @@ export const TOOTH_NAMES: Record<number, string> = {
   8: "3ème molaire (dent de sagesse)",
 };
 
+export type ToothType = "Incisive" | "Canine" | "Prémolaire" | "Molaire";
+
+export function toothType(fdi: number | string): ToothType {
+  const pos = Number(fdi) % 10;
+  if (pos <= 2) return "Incisive";
+  if (pos === 3) return "Canine";
+  if (pos <= 5) return "Prémolaire";
+  return "Molaire";
+}
+
+export function toothArcade(fdi: number | string) {
+  const q = Math.floor(Number(fdi) / 10);
+  return q === 1 || q === 2 ? "Maxillaire" : "Mandibulaire";
+}
+
+export function toothSide(fdi: number | string) {
+  const q = Math.floor(Number(fdi) / 10);
+  return q === 1 || q === 4 ? "Droit" : "Gauche";
+}
+
 export function toothLabel(fdi: number | string) {
   const n = Number(fdi);
   const pos = n % 10;
   return `${n} — ${TOOTH_NAMES[pos] ?? "Dent"}`;
 }
+
+export function toothSummary(fdi: number | string) {
+  return `${toothType(fdi)} · ${toothArcade(fdi)} · ${toothSide(fdi)}`;
+}
+
+export const ETATS_DENT = [
+  "Saine",
+  "Carie",
+  "Fracturée",
+  "Infection",
+  "Abcès",
+  "Restaurée",
+  "Couronne",
+  "Implant",
+  "Extraite",
+  "Absente",
+] as const;
+
+export type ToothDetail = { fdi: number; etat: string };
+
+export const TRAITEMENTS = [
+  "Consultation",
+  "Détartrage",
+  "Obturation",
+  "Extraction",
+  "Dévitalisation",
+  "Traitement endodontique",
+  "Implant",
+  "Couronne",
+  "Bridge",
+  "Blanchiment",
+  "Orthodontie",
+  "Polissage",
+  "Nettoyage",
+  "Chirurgie",
+] as const;
 
 export const MOTIFS = [
   "Douleur dentaire (odontalgie)",
@@ -55,31 +111,7 @@ export const DIAGNOSTICS = [
   "Hypersensibilité dentinaire",
 ];
 
-export const ACTES = [
-  "Détartrage / surfaçage radiculaire",
-  "Obturation composite (restauration)",
-  "Obturation amalgame",
-  "Coiffage pulpaire",
-  "Pulpotomie",
-  "Traitement endodontique (dévitalisation)",
-  "Reprise de traitement endodontique",
-  "Extraction simple",
-  "Extraction chirurgicale (avulsion)",
-  "Germectomie / dent de sagesse incluse",
-  "Inlay-onlay",
-  "Couronne céramo-métallique",
-  "Couronne céramo-céramique (zircone)",
-  "Bridge",
-  "Prothèse amovible partielle",
-  "Prothèse amovible complète",
-  "Implant dentaire",
-  "Scellement de sillons",
-  "Radiographie rétro-alvéolaire",
-  "Radiographie panoramique (OPT)",
-  "Anesthésie locale / loco-régionale",
-  "Blanchiment (éclaircissement)",
-  "Gouttière occlusale",
-];
+export const ACTES = [...TRAITEMENTS];
 
 export const PRESCRIPTIONS = [
   "Amoxicilline 1 g — 2×/j pendant 7 jours",
@@ -90,10 +122,29 @@ export const PRESCRIPTIONS = [
   "Bain de bouche chlorhexidine 0,12 % — 2×/j pendant 7 jours",
 ];
 
-export const STATUTS_RDV = ["Planifié", "Confirmé", "En salle", "Terminé", "Annulé", "Absent (no-show)"];
-export const STATUTS_PAIEMENT = ["Impayé", "Partiel", "Payé", "Prise en charge (mutuelle)"];
+export const CONSEILS = [
+  "Brossage 2×/j pendant 2 minutes, brosse souple",
+  "Fil dentaire / brossettes interdentaires quotidiens",
+  "Éviter les aliments durs 48 h après l'intervention",
+  "Arrêt du tabac pour la cicatrisation gingivale",
+  "Contrôle et détartrage tous les 6 mois",
+];
+
+export const STATUTS_RDV = ["En attente", "Confirmé", "Reporté", "Terminé", "Annulé"] as const;
+export const STATUTS_PAIEMENT = ["Impayé", "Partiel", "Payé", "Prise en charge (assurance)"];
+export const MODES_PAIEMENT = ["Espèces", "Carte bancaire", "Mobile Money", "Virement bancaire"] as const;
 export const SEXES = ["Non précisé", "Femme", "Homme"];
 export const GROUPES_SANGUINS = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"];
+export const ROLE_LABELS: Record<string, string> = {
+  admin: "Administrateur",
+  dentiste: "Dentiste",
+  assistant: "Secrétaire",
+};
+
+export function formatAriary(value: number | string | null | undefined) {
+  const n = Number(value ?? 0);
+  return `${n.toLocaleString("fr-FR", { maximumFractionDigits: 0 })} Ar`;
+}
 
 export function ageFromDate(date: string | null | undefined) {
   if (!date) return null;
@@ -118,4 +169,21 @@ export function formatDate(value: string) {
     month: "long",
     year: "numeric",
   });
+}
+
+export function monthKey(value: string) {
+  const d = new Date(value);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+}
+
+export function startOfWeek(date: Date) {
+  const d = new Date(date);
+  const day = (d.getDay() + 6) % 7;
+  d.setHours(0, 0, 0, 0);
+  d.setDate(d.getDate() - day);
+  return d;
+}
+
+export function sameDay(a: Date | string, b: Date | string) {
+  return new Date(a).toDateString() === new Date(b).toDateString();
 }
