@@ -24,7 +24,7 @@ export function AppointmentDialog({ patientId }: { patientId?: string }) {
   const [open, setOpen] = useState(false);
   const [selectedPatient, setSelectedPatient] = useState(patientId ?? "");
   const [motif, setMotif] = useState(MOTIFS[1]!);
-  const [statut, setStatut] = useState(STATUTS_RDV[0]!);
+  const [statut, setStatut] = useState<string>(STATUTS_RDV[0]!);
   const queryClient = useQueryClient();
 
   const { data: patients = [] } = useQuery({
