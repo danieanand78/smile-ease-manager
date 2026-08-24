@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarClock, Euro, Stethoscope, Users } from "lucide-react";
+import { AlertCircle, CalendarClock, Coins, Stethoscope, UserPlus, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { AppointmentDialog } from "@/components/AppointmentDialog";
 import { PatientDialog } from "@/components/PatientDialog";
 import { listAppointments, listPatients, listVisits } from "@/lib/api";
-import { formatDateTime } from "@/lib/dental";
+import { formatAriary, formatDateTime } from "@/lib/dental";
 
 export const Route = createFileRoute("/_authenticated/tableau-de-bord")({
   head: () => ({
