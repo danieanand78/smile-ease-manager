@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Badge } from "@/components/ui/badge";
 import { listAppointments, listPatients, listVisits } from "@/lib/api";
+import { formatAriary } from "@/lib/dental";
 
 export const Route = createFileRoute("/_authenticated/statistiques")({
   head: () => ({
