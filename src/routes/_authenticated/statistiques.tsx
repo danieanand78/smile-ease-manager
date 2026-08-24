@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 
 import { Badge } from "@/components/ui/badge";
 import { listAppointments, listPatients, listVisits } from "@/lib/api";
+import { formatAriary } from "@/lib/dental";
 
 export const Route = createFileRoute("/_authenticated/statistiques")({
   head: () => ({
@@ -60,14 +61,37 @@ function StatsPage() {
   const noShow = appointments.length ? (absents / appointments.length) * 100 : 0;
   const panier = visits.length ? revenue / visits.length : 0;
 
+  const annules = appointments.filter((a) => a.statut === "Annulé").length;
+
   const kpis = [
     { label: "File active patients", value: patients.length },
     { label: "Consultations", value: visits.length },
-    { label: "Honoraires", value: `${revenue.toFixed(2)} €` },
-    { label: "Panier moyen / séance", value: `${panier.toFixed(2)} €` },
-    { label: "Impayés", value: `${impayes.toFixed(2)} €` },
+    { label: "Honoraires", value: formatAriary(revenue) },
+    { label: "Panier moyen / séance", value: formatAriary(panier) },
+    { label: "Impayés", value: formatAriary(impayes) },
     { label: "Taux d'absentéisme", value: `${noShow.toFixed(1)} %` },
+    { label: "Rendez-vous annulés", value: annules },
+    { label: "Traitements enregistrés", value: visits.reduce((s, v) => s + (v.traitements?.length ?? 0), 0) },
   ];
+
+  const monthKey = (d: string) => new Date(d).toISOString().slice(0, 7);
+  const months = Array.from(
+    new Set([
+      ...patients.map((p) => monthKey(p.created_at)),
+      ...visits.map((v) => monthKey(v.date_visite)),
+    ]),
+  )
+    .sort()
+    .slice(-6);
+  const parMois = months.map((m) => ({
+    mois: m,
+    patients: patients.filter((p) => monthKey(p.created_at) === m).length,
+    consultations: visits.filter((v) => monthKey(v.date_visite) === m).length,
+    revenus: visits
+      .filter((v) => monthKey(v.date_visite) === m)
+      .reduce((s, v) => s + Number(v.honoraires ?? 0), 0),
+  }));
+  const traitements = tally(visits.flatMap((v) => v.traitements ?? []));
 
   return (
     <div className="space-y-8">
@@ -86,6 +110,41 @@ function StatsPage() {
           </div>
         ))}
       </div>
+
+      <section className="surface-panel p-6">
+        <h2 className="text-lg font-semibold">Évolution mensuelle</h2>
+        {parMois.length === 0 ? (
+          <p className="mt-4 text-sm text-muted-foreground">Pas encore de données.</p>
+        ) : (
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-muted-foreground">
+                  <th className="py-2">Mois</th>
+                  <th className="py-2">Nouveaux patients</th>
+                  <th className="py-2">Consultations</th>
+                  <th className="py-2">Revenus</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {parMois.map((m) => (
+                  <tr key={m.mois}>
+                    <td className="py-2 font-medium">{m.mois}</td>
+                    <td className="py-2">{m.patients}</td>
+                    <td className="py-2">{m.consultations}</td>
+                    <td className="py-2">{formatAriary(m.revenus)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="surface-panel p-6">
+        <h2 className="text-lg font-semibold">Traitements les plus fréquents</h2>
+        <Bars data={traitements} />
+      </section>
 
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="surface-panel p-6">

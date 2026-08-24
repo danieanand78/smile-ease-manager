@@ -1,12 +1,12 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { CalendarClock, Euro, Stethoscope, Users } from "lucide-react";
+import { AlertCircle, CalendarClock, Coins, Stethoscope, UserPlus, Users } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { AppointmentDialog } from "@/components/AppointmentDialog";
 import { PatientDialog } from "@/components/PatientDialog";
 import { listAppointments, listPatients, listVisits } from "@/lib/api";
-import { formatDateTime } from "@/lib/dental";
+import { formatAriary, formatDateTime } from "@/lib/dental";
 
 export const Route = createFileRoute("/_authenticated/tableau-de-bord")({
   head: () => ({
@@ -31,12 +31,21 @@ function Dashboard() {
     .filter((a) => new Date(a.date_rdv) >= new Date() && a.statut !== "Annulé")
     .slice(0, 6);
   const revenue = visits.reduce((sum, v) => sum + Number(v.honoraires ?? 0), 0);
+  const impayes = visits
+    .filter((v) => v.statut_paiement !== "Payé")
+    .reduce((sum, v) => sum + Number(v.honoraires ?? 0), 0);
+  const monthStart = new Date();
+  monthStart.setDate(1);
+  monthStart.setHours(0, 0, 0, 0);
+  const nouveauxPatients = patients.filter((p) => new Date(p.created_at) >= monthStart).length;
 
   const cards = [
     { label: "Patients (file active)", value: patients.length, icon: Users },
+    { label: "Nouveaux patients (mois)", value: nouveauxPatients, icon: UserPlus },
     { label: "Consultations réalisées", value: visits.length, icon: Stethoscope },
     { label: "RDV aujourd'hui", value: todayAppointments.length, icon: CalendarClock },
-    { label: "Honoraires cumulés", value: `${revenue.toFixed(2)} €`, icon: Euro },
+    { label: "Honoraires cumulés", value: formatAriary(revenue), icon: Coins },
+    { label: "Impayés", value: formatAriary(impayes), icon: AlertCircle },
   ];
 
   return (
@@ -52,7 +61,7 @@ function Dashboard() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {cards.map((c) => (
           <div key={c.label} className="surface-panel p-5">
             <div className="flex items-center justify-between">

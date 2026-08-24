@@ -1,6 +1,16 @@
 import { createFileRoute, Link, Outlet, redirect, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
-import { BarChart3, CalendarClock, LayoutDashboard, LogOut, Stethoscope, Users } from "lucide-react";
+import {
+  BarChart3,
+  CalendarClock,
+  ClipboardList,
+  LayoutDashboard,
+  LogOut,
+  Receipt,
+  Settings,
+  Stethoscope,
+  Users,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -18,8 +28,11 @@ export const Route = createFileRoute("/_authenticated")({
 const NAV = [
   { to: "/tableau-de-bord", label: "Tableau de bord", icon: LayoutDashboard },
   { to: "/patients", label: "Patients", icon: Users },
+  { to: "/consultations", label: "Consultations", icon: ClipboardList },
   { to: "/rendez-vous", label: "Rendez-vous", icon: CalendarClock },
+  { to: "/facturation", label: "Facturation", icon: Receipt },
   { to: "/statistiques", label: "Statistiques", icon: BarChart3 },
+  { to: "/parametres", label: "Paramètres", icon: Settings },
 ] as const;
 
 function AuthenticatedLayout() {
