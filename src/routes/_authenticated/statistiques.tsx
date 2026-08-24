@@ -61,14 +61,37 @@ function StatsPage() {
   const noShow = appointments.length ? (absents / appointments.length) * 100 : 0;
   const panier = visits.length ? revenue / visits.length : 0;
 
+  const annules = appointments.filter((a) => a.statut === "Annulé").length;
+
   const kpis = [
     { label: "File active patients", value: patients.length },
     { label: "Consultations", value: visits.length },
-    { label: "Honoraires", value: `${revenue.toFixed(2)} €` },
-    { label: "Panier moyen / séance", value: `${panier.toFixed(2)} €` },
-    { label: "Impayés", value: `${impayes.toFixed(2)} €` },
+    { label: "Honoraires", value: formatAriary(revenue) },
+    { label: "Panier moyen / séance", value: formatAriary(panier) },
+    { label: "Impayés", value: formatAriary(impayes) },
     { label: "Taux d'absentéisme", value: `${noShow.toFixed(1)} %` },
+    { label: "Rendez-vous annulés", value: annules },
+    { label: "Traitements enregistrés", value: visits.reduce((s, v) => s + (v.traitements?.length ?? 0), 0) },
   ];
+
+  const monthKey = (d: string) => new Date(d).toISOString().slice(0, 7);
+  const months = Array.from(
+    new Set([
+      ...patients.map((p) => monthKey(p.created_at)),
+      ...visits.map((v) => monthKey(v.date_visite)),
+    ]),
+  )
+    .sort()
+    .slice(-6);
+  const parMois = months.map((m) => ({
+    mois: m,
+    patients: patients.filter((p) => monthKey(p.created_at) === m).length,
+    consultations: visits.filter((v) => monthKey(v.date_visite) === m).length,
+    revenus: visits
+      .filter((v) => monthKey(v.date_visite) === m)
+      .reduce((s, v) => s + Number(v.honoraires ?? 0), 0),
+  }));
+  const traitements = tally(visits.flatMap((v) => v.traitements ?? []));
 
   return (
     <div className="space-y-8">
