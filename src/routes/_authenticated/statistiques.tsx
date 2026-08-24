@@ -111,6 +111,41 @@ function StatsPage() {
         ))}
       </div>
 
+      <section className="surface-panel p-6">
+        <h2 className="text-lg font-semibold">Évolution mensuelle</h2>
+        {parMois.length === 0 ? (
+          <p className="mt-4 text-sm text-muted-foreground">Pas encore de données.</p>
+        ) : (
+          <div className="mt-4 overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="text-left text-muted-foreground">
+                  <th className="py-2">Mois</th>
+                  <th className="py-2">Nouveaux patients</th>
+                  <th className="py-2">Consultations</th>
+                  <th className="py-2">Revenus</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {parMois.map((m) => (
+                  <tr key={m.mois}>
+                    <td className="py-2 font-medium">{m.mois}</td>
+                    <td className="py-2">{m.patients}</td>
+                    <td className="py-2">{m.consultations}</td>
+                    <td className="py-2">{formatAriary(m.revenus)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
+
+      <section className="surface-panel p-6">
+        <h2 className="text-lg font-semibold">Traitements les plus fréquents</h2>
+        <Bars data={traitements} />
+      </section>
+
       <div className="grid gap-6 lg:grid-cols-3">
         <section className="surface-panel p-6">
           <h2 className="text-lg font-semibold">Motifs de consultation</h2>
