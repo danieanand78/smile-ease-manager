@@ -14,6 +14,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedConsultationsRouteImport } from './routes/_authenticated/consultations'
 import { Route as AuthenticatedFacturationRouteImport } from './routes/_authenticated/facturation'
+import { Route as AuthenticatedParametresRouteImport } from './routes/_authenticated/parametres'
 import { Route as AuthenticatedRendezVousRouteImport } from './routes/_authenticated/rendez-vous'
 import { Route as AuthenticatedStatistiquesRouteImport } from './routes/_authenticated/statistiques'
 import { Route as AuthenticatedTableauDeBordRouteImport } from './routes/_authenticated/tableau-de-bord'
@@ -46,6 +47,11 @@ const AuthenticatedFacturationRoute =
     path: '/facturation',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedParametresRoute = AuthenticatedParametresRouteImport.update({
+  id: '/parametres',
+  path: '/parametres',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedRendezVousRoute = AuthenticatedRendezVousRouteImport.update({
   id: '/rendez-vous',
   path: '/rendez-vous',
@@ -81,6 +87,7 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/consultations': typeof AuthenticatedConsultationsRoute
   '/facturation': typeof AuthenticatedFacturationRoute
+  '/parametres': typeof AuthenticatedParametresRoute
   '/rendez-vous': typeof AuthenticatedRendezVousRoute
   '/statistiques': typeof AuthenticatedStatistiquesRoute
   '/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
@@ -92,6 +99,7 @@ export interface FileRoutesByTo {
   '/auth': typeof AuthRoute
   '/consultations': typeof AuthenticatedConsultationsRoute
   '/facturation': typeof AuthenticatedFacturationRoute
+  '/parametres': typeof AuthenticatedParametresRoute
   '/rendez-vous': typeof AuthenticatedRendezVousRoute
   '/statistiques': typeof AuthenticatedStatistiquesRoute
   '/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
@@ -105,6 +113,7 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/_authenticated/consultations': typeof AuthenticatedConsultationsRoute
   '/_authenticated/facturation': typeof AuthenticatedFacturationRoute
+  '/_authenticated/parametres': typeof AuthenticatedParametresRoute
   '/_authenticated/rendez-vous': typeof AuthenticatedRendezVousRoute
   '/_authenticated/statistiques': typeof AuthenticatedStatistiquesRoute
   '/_authenticated/tableau-de-bord': typeof AuthenticatedTableauDeBordRoute
@@ -118,6 +127,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/consultations'
     | '/facturation'
+    | '/parametres'
     | '/rendez-vous'
     | '/statistiques'
     | '/tableau-de-bord'
@@ -129,6 +139,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/consultations'
     | '/facturation'
+    | '/parametres'
     | '/rendez-vous'
     | '/statistiques'
     | '/tableau-de-bord'
@@ -141,6 +152,7 @@ export interface FileRouteTypes {
     | '/auth'
     | '/_authenticated/consultations'
     | '/_authenticated/facturation'
+    | '/_authenticated/parametres'
     | '/_authenticated/rendez-vous'
     | '/_authenticated/statistiques'
     | '/_authenticated/tableau-de-bord'
@@ -191,6 +203,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedFacturationRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/parametres': {
+      id: '/_authenticated/parametres'
+      path: '/parametres'
+      fullPath: '/parametres'
+      preLoaderRoute: typeof AuthenticatedParametresRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/rendez-vous': {
       id: '/_authenticated/rendez-vous'
       path: '/rendez-vous'
@@ -232,6 +251,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedConsultationsRoute: typeof AuthenticatedConsultationsRoute
   AuthenticatedFacturationRoute: typeof AuthenticatedFacturationRoute
+  AuthenticatedParametresRoute: typeof AuthenticatedParametresRoute
   AuthenticatedRendezVousRoute: typeof AuthenticatedRendezVousRoute
   AuthenticatedStatistiquesRoute: typeof AuthenticatedStatistiquesRoute
   AuthenticatedTableauDeBordRoute: typeof AuthenticatedTableauDeBordRoute
@@ -242,6 +262,7 @@ interface AuthenticatedRouteRouteChildren {
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedConsultationsRoute: AuthenticatedConsultationsRoute,
   AuthenticatedFacturationRoute: AuthenticatedFacturationRoute,
+  AuthenticatedParametresRoute: AuthenticatedParametresRoute,
   AuthenticatedRendezVousRoute: AuthenticatedRendezVousRoute,
   AuthenticatedStatistiquesRoute: AuthenticatedStatistiquesRoute,
   AuthenticatedTableauDeBordRoute: AuthenticatedTableauDeBordRoute,
