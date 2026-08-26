@@ -205,3 +205,49 @@ export async function exportBackup() {
   ]);
   return { exported_at: new Date().toISOString(), patients, visits, appointments, invoices };
 }
+
+type BackupPayload = {
+  patients?: Patient[];
+  visits?: (Visit & { patients?: unknown })[];
+  appointments?: (Appointment & { patients?: unknown })[];
+  invoices?: (Invoice & { patients?: unknown })[];
+};
+
+function stripJoins<T extends { patients?: unknown }>(rows: T[] | undefined) {
+  return (rows ?? []).map(({ patients: _joined, ...rest }) => rest);
+}
+
+export async function importBackup(payload: BackupPayload) {
+  const counts = { patients: 0, visits: 0, appointments: 0, invoices: 0 };
+
+  const patients = stripJoins(payload.patients as never[]);
+  if (patients.length) {
+    const { error } = await supabase.from("patients").upsert(patients as never, { onConflict: "id" });
+    if (error) throw new Error(`Patients : ${error.message}`);
+    counts.patients = patients.length;
+  }
+
+  const visits = stripJoins(payload.visits);
+  if (visits.length) {
+    const { error } = await supabase.from("visits").upsert(visits as never, { onConflict: "id" });
+    if (error) throw new Error(`Consultations : ${error.message}`);
+    counts.visits = visits.length;
+  }
+
+  const appointments = stripJoins(payload.appointments);
+  if (appointments.length) {
+    const { error } = await supabase.from("appointments").upsert(appointments as never, { onConflict: "id" });
+    if (error) throw new Error(`Rendez-vous : ${error.message}`);
+    counts.appointments = appointments.length;
+  }
+
+  const invoices = stripJoins(payload.invoices);
+  if (invoices.length) {
+    const { error } = await supabase.from("invoices").upsert(invoices as never, { onConflict: "id" });
+    if (error) throw new Error(`Factures : ${error.message}`);
+    counts.invoices = invoices.length;
+  }
+
+  return counts;
+}
+
