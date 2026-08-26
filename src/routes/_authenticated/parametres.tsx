@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import {
   exportBackup,
+  importBackup,
   getMyRole,
   getSettings,
   listProfiles,
@@ -104,6 +105,8 @@ function SettingsPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const [restoring, setRestoring] = useState(false);
+
   async function handleBackup() {
     try {
       const data = await exportBackup();
@@ -119,6 +122,26 @@ function SettingsPage() {
       toast.error((e as Error).message);
     }
   }
+
+  async function handleRestore(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    setRestoring(true);
+    try {
+      const payload = JSON.parse(await file.text());
+      const counts = await importBackup(payload);
+      queryClient.invalidateQueries();
+      toast.success(
+        `Restauration terminée : ${counts.patients} patients, ${counts.visits} consultations, ${counts.appointments} rendez-vous, ${counts.invoices} factures.`,
+      );
+    } catch (e) {
+      toast.error("Restauration impossible", { description: (e as Error).message });
+    } finally {
+      setRestoring(false);
+    }
+  }
+
 
   return (
     <div className="space-y-8">
@@ -206,14 +229,30 @@ function SettingsPage() {
       </section>
 
       <section className="surface-panel p-6">
-        <h2 className="text-lg font-semibold">Sauvegarde des données</h2>
+        <h2 className="text-lg font-semibold">Sauvegarde et restauration</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Exporte les patients, consultations, rendez-vous et factures au format JSON.
+          Exporte ou restaure les patients, consultations, rendez-vous et factures au format JSON.
         </p>
-        <Button variant="outline" className="mt-4" onClick={handleBackup}>
-          Exporter une sauvegarde
-        </Button>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <Button variant="outline" onClick={handleBackup}>
+            Exporter une sauvegarde
+          </Button>
+          <input
+            id="restore-file"
+            type="file"
+            accept="application/json"
+            className="hidden"
+            onChange={handleRestore}
+          />
+          <Button variant="outline" disabled={restoring} onClick={() => document.getElementById("restore-file")?.click()}>
+            {restoring ? "Restauration…" : "Restaurer une sauvegarde"}
+          </Button>
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          La restauration réinsère les enregistrements du fichier et met à jour ceux déjà présents.
+        </p>
       </section>
+
     </div>
   );
 }

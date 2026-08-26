@@ -5,6 +5,7 @@ import { ArrowLeft, CalendarClock, HeartPulse } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AppointmentDialog } from "@/components/AppointmentDialog";
+import { PatientDialog } from "@/components/PatientDialog";
 import { VisitDialog } from "@/components/VisitDialog";
 import { getPatient, listAppointments, listVisits } from "@/lib/api";
 import { ageFromDate, formatDate, formatDateTime, toothLabel } from "@/lib/dental";
@@ -71,9 +72,11 @@ function PatientDetail() {
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
+          <PatientDialog patient={patient} />
           <VisitDialog patientId={patient.id} />
           <AppointmentDialog patientId={patient.id} />
         </div>
+
       </div>
 
       <Tabs defaultValue="historique">
@@ -147,12 +150,18 @@ function PatientDetail() {
               <InfoRow label="Téléphone" value={patient.telephone} />
               <InfoRow label="Email" value={patient.email} />
               <InfoRow label="Adresse" value={patient.adresse} />
+              <InfoRow label="Profession" value={patient.profession} />
+              <InfoRow label="Assurance / mutuelle" value={patient.assurance} />
+              <InfoRow label="Contact d'urgence" value={patient.contact_urgence} />
               <InfoRow label="Groupe sanguin" value={patient.groupe_sanguin} />
               <InfoRow label="Antécédents médicaux" value={patient.antecedents_medicaux} />
+              <InfoRow label="Maladies chroniques" value={patient.maladies_chroniques} />
+              <InfoRow label="Médicaments" value={patient.medicaments} />
               <InfoRow label="Allergies" value={patient.allergies} />
               <InfoRow label="Traitements en cours" value={patient.traitements_en_cours} />
               <InfoRow label="Notes" value={patient.notes} />
             </dl>
+
           </div>
         </TabsContent>
       </Tabs>
