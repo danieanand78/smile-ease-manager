@@ -104,6 +104,8 @@ function SettingsPage() {
     onError: (e: Error) => toast.error(e.message),
   });
 
+  const [restoring, setRestoring] = useState(false);
+
   async function handleBackup() {
     try {
       const data = await exportBackup();
@@ -119,6 +121,26 @@ function SettingsPage() {
       toast.error((e as Error).message);
     }
   }
+
+  async function handleRestore(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0];
+    event.target.value = "";
+    if (!file) return;
+    setRestoring(true);
+    try {
+      const payload = JSON.parse(await file.text());
+      const counts = await importBackup(payload);
+      queryClient.invalidateQueries();
+      toast.success(
+        `Restauration terminée : ${counts.patients} patients, ${counts.visits} consultations, ${counts.appointments} rendez-vous, ${counts.invoices} factures.`,
+      );
+    } catch (e) {
+      toast.error("Restauration impossible", { description: (e as Error).message });
+    } finally {
+      setRestoring(false);
+    }
+  }
+
 
   return (
     <div className="space-y-8">
