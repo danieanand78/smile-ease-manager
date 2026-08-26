@@ -5,6 +5,7 @@ import { ArrowLeft, CalendarClock, HeartPulse } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AppointmentDialog } from "@/components/AppointmentDialog";
+import { PatientDialog } from "@/components/PatientDialog";
 import { VisitDialog } from "@/components/VisitDialog";
 import { getPatient, listAppointments, listVisits } from "@/lib/api";
 import { ageFromDate, formatDate, formatDateTime, toothLabel } from "@/lib/dental";
