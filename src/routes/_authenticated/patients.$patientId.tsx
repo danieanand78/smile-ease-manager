@@ -71,9 +71,11 @@ function PatientDetail() {
           </div>
         </div>
         <div className="flex flex-wrap gap-2">
+          <PatientDialog patient={patient} />
           <VisitDialog patientId={patient.id} />
           <AppointmentDialog patientId={patient.id} />
         </div>
+
       </div>
 
       <Tabs defaultValue="historique">
