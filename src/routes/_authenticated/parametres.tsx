@@ -206,14 +206,30 @@ function SettingsPage() {
       </section>
 
       <section className="surface-panel p-6">
-        <h2 className="text-lg font-semibold">Sauvegarde des données</h2>
+        <h2 className="text-lg font-semibold">Sauvegarde et restauration</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Exporte les patients, consultations, rendez-vous et factures au format JSON.
+          Exporte ou restaure les patients, consultations, rendez-vous et factures au format JSON.
         </p>
-        <Button variant="outline" className="mt-4" onClick={handleBackup}>
-          Exporter une sauvegarde
-        </Button>
+        <div className="mt-4 flex flex-wrap items-center gap-3">
+          <Button variant="outline" onClick={handleBackup}>
+            Exporter une sauvegarde
+          </Button>
+          <input
+            id="restore-file"
+            type="file"
+            accept="application/json"
+            className="hidden"
+            onChange={handleRestore}
+          />
+          <Button variant="outline" disabled={restoring} onClick={() => document.getElementById("restore-file")?.click()}>
+            {restoring ? "Restauration…" : "Restaurer une sauvegarde"}
+          </Button>
+        </div>
+        <p className="mt-3 text-xs text-muted-foreground">
+          La restauration réinsère les enregistrements du fichier et met à jour ceux déjà présents.
+        </p>
       </section>
+
     </div>
   );
 }
