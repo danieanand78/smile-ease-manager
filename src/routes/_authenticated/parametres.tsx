@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/select";
 import {
   exportBackup,
+  importBackup,
   getMyRole,
   getSettings,
   listProfiles,
