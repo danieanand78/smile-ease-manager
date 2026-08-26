@@ -147,12 +147,18 @@ function PatientDetail() {
               <InfoRow label="Téléphone" value={patient.telephone} />
               <InfoRow label="Email" value={patient.email} />
               <InfoRow label="Adresse" value={patient.adresse} />
+              <InfoRow label="Profession" value={patient.profession} />
+              <InfoRow label="Assurance / mutuelle" value={patient.assurance} />
+              <InfoRow label="Contact d'urgence" value={patient.contact_urgence} />
               <InfoRow label="Groupe sanguin" value={patient.groupe_sanguin} />
               <InfoRow label="Antécédents médicaux" value={patient.antecedents_medicaux} />
+              <InfoRow label="Maladies chroniques" value={patient.maladies_chroniques} />
+              <InfoRow label="Médicaments" value={patient.medicaments} />
               <InfoRow label="Allergies" value={patient.allergies} />
               <InfoRow label="Traitements en cours" value={patient.traitements_en_cours} />
               <InfoRow label="Notes" value={patient.notes} />
             </dl>
+
           </div>
         </TabsContent>
       </Tabs>
