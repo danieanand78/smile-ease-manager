@@ -1,6 +1,4 @@
 # Dentist
-cahier de charge Dentiste
-
 Cahier des charges
 Application de gestion d'un cabinet dentaire
 1. Contexte
