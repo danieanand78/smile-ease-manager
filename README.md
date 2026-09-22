@@ -1,271 +1,137 @@
 # Dentist
-Cahier des charges
-Application de gestion d'un cabinet dentaire
-1. Contexte
-Les cabinets dentaires utilisent encore parfois des dossiers papier ou des logiciels peu adaptés. Cela complique la gestion des patients, des rendez-vous et des traitements.
 
-L'objectif est de développer une application permettant de centraliser toutes les informations d'un cabinet dentaire dans une interface simple, sécurisée et intuitive.
+**Dentist** est une application de gestion de cabinet dentaire développée afin de centraliser les principales activités d'un cabinet au sein d'une seule interface. Le projet vise à simplifier le suivi des patients, la gestion des consultations, des rendez-vous, des traitements et des paiements.
 
-2. Objectif général
-Concevoir une application permettant de :
-gérer les patients ;
-gérer les consultations ;
-gérer les rendez-vous ;
-suivre les traitements dentaires ;
-gérer les paiements ;
-produire des statistiques ;
-sécuriser les données.
+L'application est pensée pour une utilisation locale dans un cabinet dentaire, avec une interface simple, moderne et adaptée aux besoins du personnel médical.
 
-3. Utilisateurs
-L'application comporte trois profils.
+## Fonctionnalités
 
-a- Administrateur
-Permissions :
-gérer les utilisateurs ;
-modifier les paramètres ;
-consulter toutes les statistiques ;
-sauvegarder/restaurer les données.
+Le projet est organisé autour des modules suivants :
 
-b- Dentiste
-Permissions :
-consulter les dossiers patients ;
-créer une consultation ;
-modifier une consultation ;
-consulter l'historique médical ;
-créer une prescription ;
-enregistrer les traitements.
+* Authentification
+* Tableau de bord
+* Gestion des patients
+* Gestion des consultations
+* Gestion des rendez-vous
+* Historique médical
+* Paiement et facturation
+* Statistiques
+* Paramètres
 
-c- Secrétaire
-Permissions :
-enregistrer un patient ;
-rechercher un patient ;
-prendre un rendez-vous ;
-encaisser les paiements ;
-imprimer les factures.
+## Gestion des utilisateurs
 
-4. Modules principaux
-Le logiciel sera composé des modules suivants :
+L'application prévoit trois types d'utilisateurs, chacun disposant de droits adaptés à son rôle.
 
-Authentification;
-Tableau de bord;
-Gestion des patients;
-Gestion des consultations;
-Gestion des rendez-vous;
-Historique médical;
-Paiement et facturation;
-Statistiques;
-Paramètres;
+### Administrateur
 
-5. Authentification
-Connexion locale.
+L'administrateur peut :
 
-Champs:
-Nom d'utilisateur;
-Mot de passe;
+* gérer les utilisateurs ;
+* configurer les paramètres de l'application ;
+* consulter les statistiques ;
+* sauvegarder et restaurer les données.
 
-Fonctionnalités:
-Connexion;
-Déconnexion;
-Redirection selon le rôle
+### Dentiste
 
-6. Tableau de bord
-Le tableau de bord affichera :
+Le dentiste peut :
 
-Indicateurs:
-Nombre total de patients;
-Patients enregistrés aujourd'hui;
-Rendez-vous du jour;
-Consultations du jour;
-Revenus du mois;
-Paiements en attente.
+* consulter les dossiers des patients ;
+* créer et modifier des consultations ;
+* enregistrer les traitements réalisés ;
+* consulter l'historique médical ;
+* établir des prescriptions.
 
-Activité récente:
-Derniers patients;
-Dernières consultations;
-Derniers paiements.
+### Secrétaire
 
-Agenda:
-Liste des rendez-vous de la journée.
+La secrétaire est chargée des opérations administratives, notamment :
 
-7. Gestion des patients
-Informations personnelles:
-Numéro du dossier;
-Nom;
-Prénom;
-Sexe;
-Âge;
-Téléphone;
-Adresse (facultatif)
-Profession (facultatif);
-Assurance (facultatif)
-Personne à contacter en cas d'urgence (facultatif)
+* enregistrer les nouveaux patients ;
+* rechercher un dossier patient ;
+* planifier les rendez-vous ;
+* enregistrer les paiements ;
+* éditer les factures.
 
-Informations médicales (facultatif):
-Allergies;
-Antécédents médicaux;
-Maladies chroniques;
-Traitements en cours;
-Médicaments;
-Notes générales;
+## Aperçu des modules
 
-8. Gestion des consultations
-Chaque consultation comprend :
+### Tableau de bord
 
-a- Informations générales:
-Numéro de consultation
-Date
-Heure
-Dentiste
-Patient
-Motif de consultation
+Le tableau de bord fournit une vue d'ensemble de l'activité du cabinet en affichant notamment :
 
-b- Diagnostic
-Diagnostic
-Observations cliniques
+* le nombre total de patients ;
+* les consultations et rendez-vous du jour ;
+* les revenus du mois ;
+* les paiements en attente ;
+* les dernières activités enregistrées.
 
-c- Dents concernées
-Utilisation de la notation FDI :
+### Gestion des patients
 
-11 à 18
+Chaque dossier patient regroupe les informations administratives ainsi que les informations médicales utiles, comme les allergies, les antécédents médicaux, les traitements en cours ou les observations du praticien.
 
-21 à 28
+### Gestion des consultations
 
-31 à 38
+Les consultations permettent de conserver un historique détaillé des soins réalisés.
 
-41 à 48
+Chaque consultation peut contenir :
 
-d- Informations sur la dent
-Numéro de dent
-Type de dent: Incisive, Canine, Prémolaire, Molaire
-Arcade: Maxillaire, Mandibulaire
-Côté: Gauche, Droit
-État de la dent: 
-Saine,
-Carie,
-Fracturée,
-Infection,
-Abcès,
-Restaurée,
-Couronne,
-Implant,
-Extraite,
-Absente,
+* les informations générales du rendez-vous ;
+* le diagnostic ;
+* les dents concernées (notation FDI) ;
+* l'état des dents ;
+* les traitements effectués ;
+* les prescriptions ;
+* le coût de la consultation et les informations de suivi.
 
-e- Traitements réalisés
-Consultation;
-Détartrage;
-Obturation;
-Extraction;
-Dévitalisation;
-Traitement endodontique;
-Implant;
-Couronne;
-Bridge;
-Blanchiment;
-Orthodontie;
-Polissage;
-Nettoyage;
-Chirurgie;
+### Gestion des rendez-vous
 
-f- Prescription
-Médicaments;
-Conseils;
+Le module de planification permet de gérer les rendez-vous avec différents états (confirmé, en attente, annulé, reporté ou terminé) et propose plusieurs modes d'affichage, notamment journalier, hebdomadaire et mensuel.
 
-g- Fin de consultation
-Coût en Ariary;
-Durée;
-Date du prochain rendez-vous;
+### Historique médical
 
-9. Gestion des rendez-vous
+Pour chaque patient, il est possible de consulter l'ensemble de son historique :
 
-a- Informations :
+* consultations ;
+* traitements ;
+* prescriptions ;
+* paiements ;
+* rendez-vous.
 
-Patient;
-Dentiste;
-Date;
-Heure;
-Durée;
-Motif;
+### Paiement et facturation
 
-b- Statut :
+Le système prend en charge la génération des factures ainsi que plusieurs modes de paiement :
 
-Confirmé;
-En attente;
-Annulé;
-Reporté;
-Terminé;
+* espèces ;
+* carte bancaire ;
+* Mobile Money ;
+* virement bancaire.
 
-c- Affichage :
+### Statistiques
 
-Calendrier mensuel;
-Calendrier hebdomadaire;
-Liste quotidienne;
+Le module de statistiques permet d'obtenir différents indicateurs sur l'activité du cabinet, tels que :
 
-10. Historique
-Pour chaque patient :
+* le nombre de patients ;
+* les consultations réalisées ;
+* les revenus mensuels ;
+* les traitements les plus fréquents ;
+* les rendez-vous annulés.
 
-Toutes les consultations
-Tous les traitements
-Toutes les prescriptions
-Tous les paiements
-Tous les rendez-vous
+## Technologies utilisées
 
-11. Paiement
+* **Frontend :** React + TypeScript
+* **Backend :** Python (Flask ou FastAPI)
+* **Base de données :** PostgreSQL
+* **Authentification :** locale (nom d'utilisateur et mot de passe)
 
-a- Facture :
+## Lancement du projet
 
-Numéro
-Date
-Consultation
-Patient
-Montant
-Remise
-TVA (si applicable)
-Total
+Après avoir cloné le dépôt, installez les dépendances puis démarrez l'application :
 
-b- Modes :
-
-Espèces
-Carte bancaire
-Mobile Money
-Virement bancaire
-
-12. Statistiques
-
-Le logiciel affichera :
-
-Nombre de patients
-Patients par mois
-Consultations par mois
-Revenus mensuels
-Traitements les plus fréquents
-Rendez-vous annulés
-Répartition des actes dentaires
-
-13. Paramètres
-Gestion des utilisateurs
-Gestion des rôles
-Informations du cabinet
-Logo
-Sauvegarde
-Restauration
-Préférences
-
-14. Technologies envisagées
-Frontend : React + TypeScript
-Backend : Python (Flask ou FastAPI)
-Base de données : PostgreSQL
-Authentification : Locale (nom d'utilisateur + mot de passe)
-Déploiement : Local (cabinet dentaire)
-
-
-## Development
-
-Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
-
-```sh
-git clone <this-repository-url>
+```bash
+git clone <repository-url>
 cd <repository-name>
-npm i
+npm install
 npm run dev
 ```
+
+## Objectif
+
+L'objectif de ce projet est de proposer une solution simple, intuitive et facilement maintenable pour la gestion quotidienne d'un cabinet dentaire. Son architecture a été pensée afin de faciliter l'ajout de nouvelles fonctionnalités et son évolution vers une application complète.
