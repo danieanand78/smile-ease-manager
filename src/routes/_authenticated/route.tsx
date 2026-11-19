@@ -14,6 +14,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { lockSite } from "@/lib/gate.functions";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -44,7 +45,8 @@ function AuthenticatedLayout() {
     await queryClient.cancelQueries();
     queryClient.clear();
     await supabase.auth.signOut();
-    navigate({ to: "/auth", replace: true });
+    await lockSite();
+    navigate({ to: "/acces", replace: true });
   }
 
   return (

@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AccesRouteImport } from './routes/acces'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedConsultationsRouteImport } from './routes/_authenticated/consultations'
 import { Route as AuthenticatedFacturationRouteImport } from './routes/_authenticated/facturation'
@@ -28,6 +29,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AccesRoute = AccesRouteImport.update({
+  id: '/acces',
+  path: '/acces',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -84,6 +90,7 @@ const AuthenticatedPatientsPatientIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/acces': typeof AccesRoute
   '/auth': typeof AuthRoute
   '/consultations': typeof AuthenticatedConsultationsRoute
   '/facturation': typeof AuthenticatedFacturationRoute
@@ -96,6 +103,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/acces': typeof AccesRoute
   '/auth': typeof AuthRoute
   '/consultations': typeof AuthenticatedConsultationsRoute
   '/facturation': typeof AuthenticatedFacturationRoute
@@ -110,6 +118,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/acces': typeof AccesRoute
   '/auth': typeof AuthRoute
   '/_authenticated/consultations': typeof AuthenticatedConsultationsRoute
   '/_authenticated/facturation': typeof AuthenticatedFacturationRoute
@@ -124,6 +133,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/acces'
     | '/auth'
     | '/consultations'
     | '/facturation'
@@ -136,6 +146,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/acces'
     | '/auth'
     | '/consultations'
     | '/facturation'
@@ -149,6 +160,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/acces'
     | '/auth'
     | '/_authenticated/consultations'
     | '/_authenticated/facturation'
@@ -163,6 +175,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AccesRoute: typeof AccesRoute
   AuthRoute: typeof AuthRoute
 }
 
@@ -180,6 +193,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/acces': {
+      id: '/acces'
+      path: '/acces'
+      fullPath: '/acces'
+      preLoaderRoute: typeof AccesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/auth': {
@@ -276,6 +296,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AccesRoute: AccesRoute,
   AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport

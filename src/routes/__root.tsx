@@ -5,7 +5,9 @@ import {
   createRootRouteWithContext,
   useRouter,
   HeadContent,
+  redirect,
   Scripts,
+  type ErrorComponentProps,
 } from "@tanstack/react-router";
 import { useEffect, type ReactNode } from "react";
 
@@ -13,6 +15,7 @@ import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { supabase } from "@/integrations/supabase/client";
 import { Toaster } from "@/components/ui/sonner";
+import { getGateStatus } from "@/lib/gate.functions";
 
 
 function NotFoundComponent() {
@@ -37,7 +40,7 @@ function NotFoundComponent() {
   );
 }
 
-function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
+function ErrorComponent({ error, reset }: ErrorComponentProps) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
@@ -75,7 +78,14 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   );
 }
 
+async function gateBeforeLoad({ location }: { location: { pathname: string } }): Promise<void> {
+  if (location.pathname === "/acces") return;
+  const { unlocked } = await getGateStatus();
+  if (!unlocked) throw redirect({ href: "/acces" });
+}
+
 export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()({
+  beforeLoad: gateBeforeLoad,
   head: () => ({
     meta: [
       { charSet: "utf-8" },
